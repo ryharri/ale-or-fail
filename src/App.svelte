@@ -5,6 +5,7 @@
   const storageKey = 'ale-or-fail-ratings-v1';
   let ratings = [];
   let sheetOpen = false;
+  let sheetDragStartY = null;
   let editingId = null;
   let form = emptyForm();
   let breweryFilter = 'all';
@@ -44,12 +45,43 @@
   function openNew() {
     editingId = null;
     form = emptyForm();
+    sheetDragStartY = null;
     sheetOpen = true;
+  }
+
+  function handleSheetTouchStart(event) {
+    sheetDragStartY = event.touches?.[0]?.clientY ?? event.clientY ?? null;
+  }
+
+  function closeActiveSheet() {
+    if (sheetOpen) {
+      sheetOpen = false;
+    } else if (settingsOpen) {
+      settingsOpen = false;
+    }
+    sheetDragStartY = null;
+  }
+
+  function handleSheetTouchMove(event) {
+    if (sheetDragStartY === null || (!sheetOpen && !settingsOpen)) return;
+    const currentY = event.touches?.[0]?.clientY ?? event.clientY ?? sheetDragStartY;
+    const deltaY = currentY - sheetDragStartY;
+    const contentEl = event.currentTarget;
+
+    if (contentEl.scrollTop <= 0 && deltaY > 12) {
+      event.preventDefault();
+      closeActiveSheet();
+    }
+  }
+
+  function handleSheetTouchEnd() {
+    sheetDragStartY = null;
   }
 
   function edit(item) {
     editingId = item.id;
     form = { name: item.name, brewery: item.brewery || '', description: item.description, rating: String(item.rating), type: item.type };
+    sheetDragStartY = null;
     sheetOpen = true;
   }
 
@@ -183,7 +215,7 @@
             </svg>
             <h1>Ale or Fail</h1>
           </div>
-          <button class="settings-button" type="button" on:click={() => settingsOpen = true} aria-label="Open settings">
+          <button class="settings-button" type="button" on:click={() => { settingsOpen = true; sheetDragStartY = null; }} aria-label="Open settings">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0-5 1.2 2.3c.7.2 1.4.5 2 .8l2.5-.8 2.1 2.1-.8 2.5c.4.6.6 1.3.8 2L22 12l-2.3 1.2c-.2.7-.5 1.4-.8 2l.8 2.5-2.1 2.1-2.5-.8c-.6.4-1.3.6-2 .8L12 22l-1.2-2.3c-.7-.2-1.4-.5-2-.8l-2.5.8-2.1-2.1.8-2.5c-.4-.6-.6-1.3-.8-2L2 12l2.3-1.2c.2-.7.5-1.4.8-2l-.8-2.5 2.1-2.1 2.5.8c.6-.4 1.3-.6 2-.8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
           </button>
         </div>
@@ -254,9 +286,11 @@
       </div>
   </main>
 
-  <Sheet opened={sheetOpen} onSheetClosed={() => sheetOpen = false} class="rating-sheet" backdrop>
-    <div class="sheet-handle"></div>
-    <div class="sheet-content">
+  <Sheet opened={sheetOpen} onSheetClosed={() => sheetOpen = false} class="rating-sheet" backdrop swipeToClose={true} swipeHandler=".sheet-drag-area">
+    <div class="sheet-drag-area" role="presentation" on:touchstart={handleSheetTouchStart} on:touchmove={handleSheetTouchMove} on:touchend={handleSheetTouchEnd} on:touchcancel={handleSheetTouchEnd}>
+      <div class="sheet-handle"></div>
+    </div>
+    <div class="sheet-content" role="presentation" on:touchstart={handleSheetTouchStart} on:touchmove={handleSheetTouchMove} on:touchend={handleSheetTouchEnd} on:touchcancel={handleSheetTouchEnd}>
       <div class="sheet-heading">
         <div>
           <p class="eyebrow">{editingId ? 'EDIT RATING' : 'NEW RATING'}</p>
@@ -274,7 +308,7 @@
             <legend>Type</legend>
             <div class="type-toggle">
               <button type="button" class:active={form.type === 'ale'} on:click={() => form.type = 'ale'}>Ale</button>
-              <button type="button" class:active={form.type === 'lager'} on:click={() => form.type = 'lager'}>Lager</button>
+              <button type="button" class:active={form.type === 'lager'} on:click={() => form.type = 'lager'} on:click={() => form.type = 'lager'}>Lager</button>
             </div>
           </fieldset>
         </div>
@@ -284,9 +318,11 @@
     </div>
   </Sheet>
 
-  <Sheet opened={settingsOpen} onSheetClosed={() => settingsOpen = false} class="settings-sheet" backdrop>
-    <div class="sheet-handle"></div>
-    <div class="settings-content">
+  <Sheet opened={settingsOpen} onSheetClosed={() => settingsOpen = false} class="settings-sheet" backdrop swipeToClose={true} swipeHandler=".sheet-drag-area">
+    <div class="sheet-drag-area" role="presentation" on:touchstart={handleSheetTouchStart} on:touchmove={handleSheetTouchMove} on:touchend={handleSheetTouchEnd} on:touchcancel={handleSheetTouchEnd}>
+      <div class="sheet-handle"></div>
+    </div>
+    <div class="settings-content" role="presentation" on:touchstart={handleSheetTouchStart} on:touchmove={handleSheetTouchMove} on:touchend={handleSheetTouchEnd} on:touchcancel={handleSheetTouchEnd}>
       <p class="eyebrow">SETTINGS</p>
       <h2>Your data</h2>
       <button class="settings-item" type="button" on:click={async () => { await exportBackup(); settingsOpen = false; }} disabled={!ratings.length}>
