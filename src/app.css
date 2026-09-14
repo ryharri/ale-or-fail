@@ -1,12 +1,12 @@
 @font-face { font-family: "Lobster"; src: url("/fonts/lobster.ttf") format("truetype"); font-display: swap; }
 :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", sans-serif; }
 html, body, #app { min-height: 100%; }
-html { -webkit-text-size-adjust: 100%; }
-body { margin: 0; min-height: 100vh; overflow: hidden; background: #000; color: #f5f5f7; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+html { -webkit-text-size-adjust: 100%; width: 100%; overflow-x: hidden; }
+body { margin: 0; min-height: 100vh; width: 100%; max-width: 100vw; overflow-x: hidden; overflow-y: hidden; background: #000; color: #f5f5f7; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 button, input, textarea { font: inherit; }
 input, textarea, select { font-size: 16px; }
-.framework7-root { --f7-glass-bg-color: #1c1c1e; --f7-glass-shadow: none; position: relative; height: 100vh; overflow: hidden; }
-.app-shell { box-sizing: border-box; height: 100vh; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: max(20px, env(safe-area-inset-top)) 0 calc(100px + env(safe-area-inset-bottom)); background: radial-gradient(ellipse 80% 35% at 50% 0%, #3d1019 0%, #000 72%); }
+.framework7-root { --f7-glass-bg-color: #1c1c1e; --f7-glass-shadow: none; position: relative; width: 100%; max-width: 100vw; height: 100vh; overflow: hidden; }
+.app-shell { box-sizing: border-box; width: 100%; max-width: 100vw; height: 100vh; overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: max(20px, env(safe-area-inset-top)) 0 calc(100px + env(safe-area-inset-bottom)); background: radial-gradient(ellipse 80% 35% at 50% 0%, #3d1019 0%, #000 72%); }
 .app-header { margin: 0 20px 25px; }.brand-row { display: flex; align-items: center; justify-content: space-between; margin: 0 0 18px; }.brand-lockup { display: flex; align-items: center; gap: 10px; }.beer-logo { width: 44px; height: 44px; flex: 0 0 44px; filter: drop-shadow(0 3px 5px #0008); }.app-header h1 { margin: 0; color: #f5f5f7; font-family: "Lobster", cursive; font-size: 42px; line-height: .95; letter-spacing: -.025em; font-weight: 400; text-shadow: 0 2px 8px #0008; }.settings-button { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid #52232b; border-radius: 12px; background: #211014; color: #f59091; }.settings-button svg { width: 20px; height: 20px; }.settings-button:active { background: #421820; }
 .eyebrow { color: #f06a6c; font-size: 11px; font-weight: 800; letter-spacing: .11em; margin: 0 0 6px; }
 .header-meta { display: flex; align-items: center; justify-content: space-between; gap: 12px; }.summary { margin: 0; font-size: 15px; color: #a1a1a6; }
