@@ -27,7 +27,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: Build for GitHub Pages
+        env:
+          GITHUB_PAGES: 'true'
+        run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
