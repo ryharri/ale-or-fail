@@ -21,7 +21,7 @@
       description: "",
       rating: "",
       type: "ale",
-      colour: "blonde-ale",
+      colour: "",
     };
   }
 
@@ -97,7 +97,10 @@
         description: item.description,
         rating: String(item.rating),
         type: item.type,
-        colour: aleColours.includes(item.colour) ? item.colour : "",
+        colour:
+          item.type === "ale" && aleColours.includes(item.colour)
+            ? item.colour
+            : "",
       };
     }
     sheetOpen = true;
@@ -420,6 +423,12 @@
                 <span class:lager={item.type === "lager"} class="type-pill"
                   >{item.type}</span
                 >
+                {#if item.type === "ale" && item.colour}
+                  <span
+                    class="ale-colour-dot {item.colour}"
+                    aria-label={`Ale colour: ${item.colour.replace("-ale", " ale")}`}
+                  ></span>
+                {/if}
               </div>
               <p>
                 {item.brewery || "Unknown brewery"}{item.description
