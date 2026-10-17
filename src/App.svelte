@@ -2,6 +2,7 @@
   import { App, Sheet, Button } from "framework7-svelte";
 
   const storageKey = "ale-or-fail-ratings-v1";
+  const aleColours = ["blonde-ale", "pale-ale", "dark-ale"];
 
   function loadRatings() {
     if (typeof localStorage === "undefined") return [];
@@ -14,7 +15,14 @@
   }
 
   function emptyForm() {
-    return { name: "", brewery: "", description: "", rating: "", type: "ale" };
+    return {
+      name: "",
+      brewery: "",
+      description: "",
+      rating: "",
+      type: "ale",
+      colour: "blonde-ale",
+    };
   }
 
   let ratings = $state(loadRatings());
@@ -89,6 +97,7 @@
         description: item.description,
         rating: String(item.rating),
         type: item.type,
+        colour: aleColours.includes(item.colour) ? item.colour : "",
       };
     }
     sheetOpen = true;
@@ -106,6 +115,9 @@
       description: form.description.trim(),
       rating: Math.round(value * 10) / 10,
       type: form.type,
+      ...(form.type === "ale" && aleColours.includes(form.colour)
+        ? { colour: form.colour }
+        : {}),
       createdAt: editingId
         ? ratings.find((rating) => rating.id === editingId)?.createdAt ||
           Date.now()
@@ -223,6 +235,9 @@
             typeof item.description === "string" ? item.description.trim() : "",
           rating: Math.round(rating * 10) / 10,
           type: item.type === "lager" ? "lager" : "ale",
+          ...(item.type !== "lager" && aleColours.includes(item.colour)
+            ? { colour: item.colour }
+            : {}),
           createdAt: Number.isFinite(Number(item.createdAt))
             ? Number(item.createdAt)
             : Date.now(),
@@ -347,6 +362,9 @@
           >
         </button>
       </div>
+    </header>
+
+    <div class="page-header-meta">
       <p class="eyebrow">YOUR BEER LOG</p>
       <div class="header-meta">
         {#if ratings.length}
@@ -358,7 +376,7 @@
           <p class="summary">Your honest pint opinions, all in one place.</p>
         {/if}
       </div>
-    </header>
+    </div>
 
     {#if ratings.length}
       <div class="filters" aria-label="Filter ratings">
@@ -511,6 +529,23 @@
             </div>
           </fieldset>
         </div>
+        {#if form.type === "ale"}
+          <fieldset class="colour-fieldset">
+            <legend>Colour</legend>
+            <div class="colour-options" role="group" aria-label="Ale colour">
+              {#each aleColours as colour}
+                <button
+                  type="button"
+                  class="colour-option {colour}"
+                  class:selected={form.colour === colour}
+                  aria-label={colour.replace("-ale", " ale")}
+                  aria-pressed={form.colour === colour}
+                  onclick={() => (form.colour = colour)}
+                ></button>
+              {/each}
+            </div>
+          </fieldset>
+        {/if}
         <Button fill large type="submit" class="save-button"
           >{editingId ? "Save changes" : "Save rating"}</Button
         >
