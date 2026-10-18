@@ -98,7 +98,7 @@ select {
   padding-top: 18px;
   transition: padding-top 200ms ease;
 }
-.home-card-header.card-opening {
+.home-card.card-opening .home-card-header {
   padding-top: max(18px, env(safe-area-inset-top));
 }
 .home-settings-button {

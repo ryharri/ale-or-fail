@@ -3,7 +3,6 @@
   import BrandLockup from '../components/BrandLockup.svelte';
 
   export let navigate;
-  let homeCardOpening = false;
 
   const storageKey = 'ale-or-fail-ratings-v1';
   let settingsOpen = false;
@@ -100,14 +99,6 @@
     }
   }
 
-  function handleCardOpen() {
-    homeCardOpening = true;
-  }
-
-  function handleCardClose() {
-    homeCardOpening = false;
-  }
-
   function handleCardOpened() {
     if (typeof navigate === 'function') {
       navigate('/app/');
@@ -133,16 +124,10 @@
       class="home-card"
       expandable
       expandableAnimateWidth
-      onCardOpen={handleCardOpen}
       onCardOpened={handleCardOpened}
-      onCardClose={handleCardClose}
-      onCardClosed={handleCardClose}
     >
       {#snippet content()}
-        <header
-          class="app-header home-card-header"
-          class:card-opening={homeCardOpening}
-        >
+        <header class="app-header home-card-header">
           <div class="brand-row">
             <BrandLockup />
           </div>
